@@ -16,28 +16,28 @@ import java.nio.charset.StandardCharsets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import model.Event;
+import model.Person;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import requests.Request;
 import results.AllEventsResult;
 import results.LoginResult;
 import results.PeopleResult;
+import results.PersonResult;
 import results.RegisterResult;
 import results.Result;
 
 public class ServerProxy { // also known as ServerFacade
 
+    private static final String LOG_TAG = "ServerProxy";
     private static String serverHost;
     private static String serverPort;
 
-    private static final String LOG_TAG = "ServerProxy";
-// Should serialize requests, send them to server,
-    // get results, and deserialize those
-
-    public static void main(String[] args) {
-        serverHost = args[0];
-        serverPort = args[1];
-    }
+//    public static void main(String[] args) {
+//        serverHost = args[0];
+//        serverPort = args[1];
+//    }
 
     public LoginResult login(LoginRequest request) {
         LoginResult result = new LoginResult();
@@ -61,10 +61,11 @@ public class ServerProxy { // also known as ServerFacade
 
             reqBody.close();
 
+            InputStream responseBody = http.getInputStream();
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                InputStream responseBody = http.getInputStream();
                 System.out.println("Registration successful");
                 result = deserialize(responseBody, LoginResult.class);
+                populateDataCache(result.getAuthtoken());
             } else {
                 System.out.println("Error: " + http.getResponseMessage());
                 InputStream respBody = http.getErrorStream();
@@ -77,10 +78,10 @@ public class ServerProxy { // also known as ServerFacade
         return result;
     }
 
-    public RegisterResult register(RegisterRequest request) {
-        RegisterResult result = new RegisterResult();
+    public LoginResult register(RegisterRequest request) {
+        LoginResult result = new LoginResult();
         try {
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "/register");
+            URL url = new URL("http://" + serverHost + ":" + serverPort + "/user/register");
 
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("POST");
@@ -102,14 +103,17 @@ public class ServerProxy { // also known as ServerFacade
 
             reqBody.close();
 
+            InputStream respBody;
+
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                // do something here to demonstrate success
-                System.out.println("Registration successful");
-                result = deserialize(http.getInputStream(), RegisterResult.class);
+                Log.d(LOG_TAG, "Registration successful");
+                respBody = http.getInputStream();
+                result = deserialize(respBody, LoginResult.class);
+                populateDataCache(result.getAuthtoken());
             } else {
-                System.out.println("Error: " + http.getResponseMessage());
-                InputStream respBody = http.getErrorStream();
-                result = deserialize(http.getInputStream(), RegisterResult.class);
+                Log.e(LOG_TAG, "Unsuccessful registration: " + http.getResponseMessage());
+                respBody = http.getErrorStream();
+                result = deserialize(respBody, LoginResult.class);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -118,12 +122,112 @@ public class ServerProxy { // also known as ServerFacade
         return result;
     }
 
-    PeopleResult getPeople(Request request) {
-        return null;
+    private void populateDataCache(String authToken) {
+        getData(authToken, Person.class);
+        getData(authToken, Event.class);
     }
-    AllEventsResult getEvents(Request request) {
-        return null;
+
+//    private void getPeople(String authToken) {
+//        Result result = new Result();
+//        result.setSuccess(false);
+//        try {
+//            URL url = new URL("http://" + serverHost + ":" + serverPort + "/person");
+//
+//            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+//            http.setRequestMethod("GET");
+//            http.setDoOutput(false); // Indicates that the request contains a request body
+//            http.setRequestProperty("Authorization", authToken);
+//            http.addRequestProperty("Accept", "application/json");
+//            http.connect();
+//
+//            http.getOutputStream().close();
+//
+//            InputStream response = http.getInputStream();
+//            if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
+//                Log.d(LOG_TAG, "Got people successfully");
+//            } else {
+//                response = http.getErrorStream();
+//                Log.e(LOG_TAG, result.getMessage());
+//            }
+//            result = deserialize(response, PeopleResult.class);
+//            DataCache.getInstance().resultToPeople((PeopleResult) result);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Log.e(LOG_TAG, e.getMessage(), e);
+//        }
+//    }
+
+    private <T> void getData(String authToken, Class<T> classType) {
+        String urlExtension;
+        try {
+            if (classType == Person.class) {
+                urlExtension = "person";
+            } else if (classType == Event.class) {
+                urlExtension = "event";
+            } else {
+                throw new IOException("Invalid data type parameter");
+            }
+
+            URL url = new URL("http://" + serverHost + ":" + serverPort + "/" + urlExtension);
+
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("GET");
+            http.setDoOutput(false); // Indicates that the request contains a request body
+            http.setRequestProperty("Authorization", authToken);
+            http.addRequestProperty("Accept", "application/json");
+            http.connect();
+
+//            http.getOutputStream().close();
+
+            InputStream response = http.getInputStream();
+            if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                Log.d(LOG_TAG, "Got " + urlExtension + "s successfully");
+            } else {
+                response = http.getErrorStream();
+                Log.e(LOG_TAG, "Error occurred when collecting " + urlExtension + "s");
+            }
+
+            if (classType == Person.class) {
+                DataCache.getInstance().resultToPeople(deserialize(response, PeopleResult.class));
+            } else if (classType == Event.class) {
+                DataCache.getInstance().resultToEvents(deserialize(response, AllEventsResult.class));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(LOG_TAG, e.getMessage(), e);
+        }
     }
+
+//    private void getEvents(String authToken) {
+//        Result result = new Result();
+//
+//        result.setSuccess(false);
+//        try {
+//            URL url = new URL("http://" + serverHost + ":" + serverPort + "/event");
+//
+//            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+//            http.setRequestMethod("GET");
+//            http.setDoOutput(false); // Indicates that the request contains a request body
+//            http.setRequestProperty("Authorization", authToken);
+//            http.addRequestProperty("Accept", "application/json");
+//            http.connect();
+//
+//            http.getOutputStream().close();
+//
+//            InputStream response = http.getInputStream();
+//            if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
+//                Log.d(LOG_TAG, "Got events successfully");
+//            } else {
+//                response = http.getErrorStream();
+//                Log.e(LOG_TAG, result.getMessage());
+//            }
+//            result = deserialize(response, AllEventsResult.class);
+//            DataCache.getInstance().resultToEvents((AllEventsResult) result);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Log.e(LOG_TAG, e.getMessage(), e);
+//        }
+//    }
 
     // THIS IS DUPLICATE CODE
     private void writeString(String str, OutputStream os) throws IOException {

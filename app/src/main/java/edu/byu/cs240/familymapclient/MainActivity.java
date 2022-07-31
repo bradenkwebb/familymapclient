@@ -10,7 +10,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
 
     private static final String LOG_TAG = "MainActivity";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
