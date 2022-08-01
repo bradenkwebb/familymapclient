@@ -74,6 +74,14 @@ public class DataCache {
         return userPersonID;
     }
 
+    public Set<String> eventTypes() {
+        HashSet<String> types = new HashSet<>();
+        for (Event event : events.values()) {
+            types.add(event.getEventType());
+        }
+        return types;
+    }
+
     public void setUserPersonID(String userPersonID) {
         this.userPersonID = userPersonID;
     }

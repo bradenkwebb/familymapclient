@@ -19,7 +19,18 @@
         android:theme="@style/Theme.FamilyMapClient"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".SearchActivity"
+            android:parentActivityName=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EventActivity"
+            android:parentActivityName=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PersonActivity"
+            android:parentActivityName=".MainActivity"
+            android:exported="false" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -37,6 +48,7 @@
 
         <activity
             android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
         <activity
