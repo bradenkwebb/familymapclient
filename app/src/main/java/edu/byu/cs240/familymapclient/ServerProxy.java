@@ -127,35 +127,6 @@ public class ServerProxy { // also known as ServerFacade
         getData(authToken, Event.class);
     }
 
-//    private void getPeople(String authToken) {
-//        Result result = new Result();
-//        result.setSuccess(false);
-//        try {
-//            URL url = new URL("http://" + serverHost + ":" + serverPort + "/person");
-//
-//            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-//            http.setRequestMethod("GET");
-//            http.setDoOutput(false); // Indicates that the request contains a request body
-//            http.setRequestProperty("Authorization", authToken);
-//            http.addRequestProperty("Accept", "application/json");
-//            http.connect();
-//
-//            http.getOutputStream().close();
-//
-//            InputStream response = http.getInputStream();
-//            if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
-//                Log.d(LOG_TAG, "Got people successfully");
-//            } else {
-//                response = http.getErrorStream();
-//                Log.e(LOG_TAG, result.getMessage());
-//            }
-//            result = deserialize(response, PeopleResult.class);
-//            DataCache.getInstance().resultToPeople((PeopleResult) result);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Log.e(LOG_TAG, e.getMessage(), e);
-//        }
-//    }
 
     private <T> void getData(String authToken, Class<T> classType) {
         String urlExtension;
@@ -177,8 +148,6 @@ public class ServerProxy { // also known as ServerFacade
             http.addRequestProperty("Accept", "application/json");
             http.connect();
 
-//            http.getOutputStream().close();
-
             InputStream response = http.getInputStream();
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 Log.d(LOG_TAG, "Got " + urlExtension + "s successfully");
@@ -197,37 +166,6 @@ public class ServerProxy { // also known as ServerFacade
             Log.e(LOG_TAG, e.getMessage(), e);
         }
     }
-
-//    private void getEvents(String authToken) {
-//        Result result = new Result();
-//
-//        result.setSuccess(false);
-//        try {
-//            URL url = new URL("http://" + serverHost + ":" + serverPort + "/event");
-//
-//            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-//            http.setRequestMethod("GET");
-//            http.setDoOutput(false); // Indicates that the request contains a request body
-//            http.setRequestProperty("Authorization", authToken);
-//            http.addRequestProperty("Accept", "application/json");
-//            http.connect();
-//
-//            http.getOutputStream().close();
-//
-//            InputStream response = http.getInputStream();
-//            if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
-//                Log.d(LOG_TAG, "Got events successfully");
-//            } else {
-//                response = http.getErrorStream();
-//                Log.e(LOG_TAG, result.getMessage());
-//            }
-//            result = deserialize(response, AllEventsResult.class);
-//            DataCache.getInstance().resultToEvents((AllEventsResult) result);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Log.e(LOG_TAG, e.getMessage(), e);
-//        }
-//    }
 
     // THIS IS DUPLICATE CODE
     private void writeString(String str, OutputStream os) throws IOException {

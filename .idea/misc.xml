@@ -4,7 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/bkweb/Documents/cs_240/FamilyMapClient/app/src/main/res/layout/activity_main.xml" value="0.3625" />
+        <entry key="..\:/Users/bkweb/Documents/cs_240/FamilyMapClient/app/src/main/res/layout/activity_maps.xml" value="0.3625" />
         <entry key="..\:/Users/bkweb/Documents/cs_240/FamilyMapClient/app/src/main/res/layout/fragment_login.xml" value="0.25" />
+        <entry key="..\:/Users/bkweb/Documents/cs_240/FamilyMapClient/app/src/main/res/layout/fragment_map.xml" value="0.3625" />
       </map>
     </option>
   </component>

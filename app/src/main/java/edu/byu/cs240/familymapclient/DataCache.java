@@ -31,6 +31,13 @@ public class DataCache {
         maternalAncestors = new HashSet<>();
     }
 
+    private Map<String, Person> people; // a map from personID to Person
+    private Map<String, Event> events; // a map from eventID to Event
+    private Map<String, List<Event>> personEvents; // a map from personID to that person's events
+    private Set<String> paternalAncestors; // a map from personID to their paternal ancestors
+    private Set<String> maternalAncestors; // a map from personID to their maternal ancestors
+    private String userPersonID;
+
     public void resultToPeople(PeopleResult result) {
         this.people.clear();
 
@@ -62,14 +69,6 @@ public class DataCache {
             }
         }
     }
-
-    private Map<String, Person> people; // a map from personID to Person
-    private Map<String, Event> events; // a map from eventID to Event
-    private Map<String, List<Event>> personEvents; // a map from personID to that person's events
-    private Set<String> paternalAncestors; // a map from personID to their paternal ancestors
-    private Set<String> maternalAncestors; // a map from personID to their maternal ancestors
-
-    private String userPersonID;
 
     public String getUserPersonID() {
         return userPersonID;

@@ -42,4 +42,6 @@
     <string name="defaultServerHost">10.0.2.2</string>
     <string name="defaultServerPort">8080</string>
     <string name="invalid_credentials">Invalid credentials</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="mapFragmentMessage">Welcome to Google Maps:)</string>
 </resources>

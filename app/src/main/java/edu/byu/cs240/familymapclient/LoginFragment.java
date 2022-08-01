@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import model.Person;
 import model.User;
 import requests.LoginRequest;
 import requests.RegisterRequest;
@@ -71,12 +72,8 @@ public class LoginFragment extends Fragment {
                         Bundle data = message.getData();
                         if (data.getBoolean(SUCCESS_KEY, false)) {
                             listener.notifyDone();
-//                            Toast.makeText(getActivity(), "Login successful", Toast.LENGTH_SHORT).show();
-                            DataCache.getInstance().setUserPersonID(data.getString(PERSON_ID_KEY, "error"));
-
-                            System.out.println(DataCache.getInstance().getUserPersonID());
-
-                            Toast.makeText(getActivity(), DataCache.getInstance().getUserPersonID(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), "Login successful", Toast.LENGTH_SHORT).show();
+                            displayName(data);
                         } else {
                             Toast.makeText(getActivity(),
                                     "Login unsuccessful\n" +
@@ -136,6 +133,8 @@ public class LoginFragment extends Fragment {
                                         "Registration successful",
                                             Toast.LENGTH_SHORT)
                                     .show();
+
+                            displayName(data);
                         } else {
                             String err_message = data.getString(ERR_MESSAGE_KEY,
                                     "An error occurred when registering");
@@ -204,6 +203,17 @@ public class LoginFragment extends Fragment {
             messageHandler.sendMessage(toMessage(result));
         }
     }
+
+    private void displayName(Bundle data) {
+        String userPersonId = data.getString(PERSON_ID_KEY, "error");
+        DataCache.getInstance().setUserPersonID(userPersonId);
+        Person userPerson = DataCache.getInstance().getPeople().get(userPersonId);
+
+        Toast.makeText(getActivity(),
+                userPerson.getFirstName() + " " + userPerson.getLastName(),
+                Toast.LENGTH_LONG).show();
+    }
+
 
     protected static Message toMessage(LoginResult result) {
         Message message = Message.obtain();
