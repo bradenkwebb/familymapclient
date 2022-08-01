@@ -1,6 +1,7 @@
 package edu.byu.cs240.familymapclient;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -8,6 +9,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +24,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.joanzapata.iconify.Icon;
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
@@ -29,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import model.Event;
+import model.Person;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapLoadedCallback {
@@ -66,10 +71,43 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
                 // Currently, this calls EventActivity, when I think it should instead call PersonActivity
 
-                String eventID = ((Event) marker.getTag()).getEventID();
-                Intent intent = new Intent(getActivity(), EventActivity.class);
-                intent.putExtra(EventActivity.EVENT_ID_KEY, eventID);
-                startActivity(intent);
+                // Actually, I think clicking a marker should keep us WITHIN the MapFragment, but then
+                // we should move to the PersonActivity if we then click on the person
+
+                Event event = ((Event) marker.getTag());
+                Person assocPerson = DataCache.getInstance().getPeople().get(event.getPersonID());
+                TextView eventDescription = getActivity().findViewById(R.id.mapTextView);
+                ImageView personImageView = getActivity().findViewById(R.id.mapPersonIcon);
+
+                String description = assocPerson.getFirstName() + " " + assocPerson.getLastName() +
+                                    "\n" + event.getEventType() + ": " + event.getCity() + ", " +
+                                    event.getCountry() + " (" + event.getYear() + ")";
+                eventDescription.setText(description);
+
+                if (assocPerson.getGender().equalsIgnoreCase("f")) {
+                    Drawable genderIcon = new IconDrawable(getActivity(),
+                            FontAwesomeIcons.fa_female).colorRes(R.color.female_icon_color).sizeDp(40);
+                    personImageView.setImageDrawable(genderIcon);
+                } else {
+                    Drawable genderIcon = new IconDrawable(getActivity(),
+                            FontAwesomeIcons.fa_male).colorRes(R.color.male_icon_color).sizeDp(40);
+                    personImageView.setImageDrawable(genderIcon);
+                }
+
+                eventDescription.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        callPersonActivity(assocPerson.getPersonID());
+                    }
+                });
+
+                personImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        callPersonActivity(assocPerson.getPersonID());
+                    }
+                });
+
                 return false;
             }
         });
@@ -127,5 +165,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             assert marker != null;
             marker.setTag(event);
         }
+    }
+
+    private void callPersonActivity(String personID) {
+        Intent intent = new Intent(getActivity(), PersonActivity.class);
+        intent.putExtra(PersonActivity.PERSON_ID_KEY, personID);
+        startActivity(intent);
     }
 }
