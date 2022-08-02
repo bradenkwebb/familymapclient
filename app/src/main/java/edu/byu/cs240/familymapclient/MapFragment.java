@@ -148,15 +148,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
     private void addEventMarkers() {
-        eventColors = new HashMap<>();
-        Set<String> eventTypes = DataCache.getInstance().eventTypes();
-
-        float skip = 360f / eventTypes.size();
-        int counter = 0;
-        for (String eventType : eventTypes) {
-            eventColors.put(eventType, counter * skip);
-            counter++;
-        }
+        eventColors = DataCache.getInstance().eventColors();
 
         for (Event event : DataCache.getInstance().getEvents().values()) {
             Marker marker = map.addMarker(new MarkerOptions().

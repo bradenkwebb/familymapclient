@@ -56,16 +56,60 @@ public class DataCache {
         }
     }
 
+    public List<Person> getImmediateFamily(String personID) {
+        List<Person> immediateFamily = new ArrayList<>();
+        Map<String, Person> allPeople = DataCache.getInstance().getPeople();
+        Person person = allPeople.get(personID);
+
+        assert person != null;
+        if (person.getMotherID() != null) {
+            immediateFamily.add(allPeople.get(person.getMotherID()));
+        }
+        if (person.getFatherID() != null) {
+            immediateFamily.add(allPeople.get(person.getFatherID()));
+        }
+        if (person.getSpouseID() != null) {
+            immediateFamily.add(allPeople.get(person.getSpouseID()));
+        }
+        if (person.getGender().equalsIgnoreCase("f")) {
+            for (Person p : allPeople.values()) {
+                if (p.getMotherID() != null && p.getMotherID().equals(personID)) {
+                    immediateFamily.add(p);
+                }
+            }
+        } else {
+            for (Person p : allPeople.values()) {
+                if (p.getFatherID() != null && p.getFatherID().equals(personID)) {
+                    immediateFamily.add(p);
+                }
+            }
+        }
+        return immediateFamily;
+    }
+
+    public Map<String, Float> eventColors() {
+        Map<String, Float> eventColors = new HashMap<>();
+        Set<String> eventTypes = eventTypes();
+
+        float skip = 360f / eventTypes.size();
+        int counter = 0;
+        for (String eventType : eventTypes) {
+            eventColors.put(eventType, counter * skip);
+            counter++;
+        }
+        return eventColors;
+    }
+
     // THERE COULD DEFINITELY BE BUGS HERE
-    private void generatePersonEvents() {
+    public void generatePersonEvents() {
         personEvents.clear();
         for (Map.Entry<String, Event> entry : events.entrySet()) {
             String personID = entry.getValue().getPersonID();
             if (personEvents.containsKey(personID) && personEvents.get(personID) != null) {
-                personEvents.get(personID).add((Event) entry.getValue());
+                personEvents.get(personID).add(entry.getValue());
             } else {
                 personEvents.put(personID,
-                        new ArrayList<Event>(Collections.singletonList(entry.getValue())));
+                        new ArrayList<>(Collections.singletonList(entry.getValue())));
             }
         }
     }

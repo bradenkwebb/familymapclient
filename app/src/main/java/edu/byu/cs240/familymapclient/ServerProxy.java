@@ -125,6 +125,7 @@ public class ServerProxy { // also known as ServerFacade
     private void populateDataCache(String authToken) {
         getData(authToken, Person.class);
         getData(authToken, Event.class);
+        DataCache.getInstance().generatePersonEvents();
     }
 
 

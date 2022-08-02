@@ -211,7 +211,7 @@ public class LoginFragment extends Fragment {
 
         Toast.makeText(getActivity(),
                 userPerson.getFirstName() + " " + userPerson.getLastName(),
-                Toast.LENGTH_LONG).show();
+                Toast.LENGTH_SHORT).show();
     }
 
 

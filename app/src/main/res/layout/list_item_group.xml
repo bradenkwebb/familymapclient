@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:layout_margin="5dp">
 
-</androidx.constraintlayout.widget.LinearLayout>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="match_parent"/>
+
+    <!--        android:src="@drawable/group_indicator_down"-->
+
+    <TextView
+        android:id="@+id/listTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:text="@string/group_title"
+        android:layout_margin="8dp"/>
+
+</LinearLayout>

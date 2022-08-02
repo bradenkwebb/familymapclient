@@ -89,7 +89,7 @@
             android:layout_row="4"
             android:layout_rowWeight="1"
             android:layout_column="0"
-            android:text="@string/first_name" />
+            android:text="@string/first_name_colon" />
 
         <EditText
             android:id="@+id/firstName"
@@ -106,7 +106,7 @@
             android:layout_row="5"
             android:layout_rowWeight="1"
             android:layout_column="0"
-            android:text="@string/last_name" />
+            android:text="@string/last_name_colon" />
 
         <EditText
             android:id="@+id/lastName"
@@ -142,7 +142,7 @@
             android:layout_row="7"
             android:layout_rowWeight="1"
             android:layout_column="0"
-            android:text="@string/gender" />
+            android:text="@string/gender_colon" />
 
         <RadioGroup
             android:id="@+id/gender_radio"

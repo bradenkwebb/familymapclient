@@ -39,10 +39,10 @@
     <string name="server_port">Server Port:</string>
     <string name="user_name">User Name:</string>
     <string name="password">Password:</string>
-    <string name="first_name">First Name:</string>
-    <string name="last_name">Last Name:</string>
+    <string name="first_name_colon">First Name:</string>
+    <string name="last_name_colon">Last Name:</string>
     <string name="email">Email:</string>
-    <string name="gender">Gender:</string>
+    <string name="gender_colon">Gender:</string>
     <string name="female">Female</string>
     <string name="male">Male</string>
     <string name="defaultServerHost">10.0.2.2</string>
@@ -52,4 +52,14 @@
     <string name="mapFragmentMessage">Welcome to Google Maps:)</string>
     <string name="searchMenu">Search</string>
     <string name="defaultInfoPanelText">Click on a marker to see event details</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="gender">Gender</string>
+    <string name="eventsTitle">Life Events</string>
+    <string name="peopleTitle">Family</string>
+    <string name="child">Child</string>
+    <string name="mother">Mother</string>
+    <string name="father">Father</string>
+    <string name="spouse">Spouse</string>
+    <string name="group_title">Group Title</string>
 </resources>
