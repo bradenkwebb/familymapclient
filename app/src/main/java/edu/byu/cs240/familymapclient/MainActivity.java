@@ -1,18 +1,12 @@
 package edu.byu.cs240.familymapclient;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.Toast;
-
-import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.Iconify;
-import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.Listener {
@@ -57,6 +51,5 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
                 .replace(R.id.fragmentFrameLayout, fragment)
                 .commit();
     }
-
 
 }

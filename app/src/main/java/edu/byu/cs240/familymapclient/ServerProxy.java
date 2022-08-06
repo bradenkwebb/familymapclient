@@ -34,11 +34,6 @@ public class ServerProxy { // also known as ServerFacade
     private static String serverHost;
     private static String serverPort;
 
-//    public static void main(String[] args) {
-//        serverHost = args[0];
-//        serverPort = args[1];
-//    }
-
     public LoginResult login(LoginRequest request) {
         LoginResult result = new LoginResult();
         result.setSuccess(false);
@@ -63,7 +58,7 @@ public class ServerProxy { // also known as ServerFacade
 
             InputStream responseBody = http.getInputStream();
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                System.out.println("Registration successful");
+                System.out.println("Login successful");
                 result = deserialize(responseBody, LoginResult.class);
                 populateDataCache(result.getAuthtoken());
             } else {
@@ -127,7 +122,6 @@ public class ServerProxy { // also known as ServerFacade
         getData(authToken, Event.class);
         DataCache.getInstance().generatePersonEvents();
     }
-
 
     private <T> void getData(String authToken, Class<T> classType) {
         String urlExtension;

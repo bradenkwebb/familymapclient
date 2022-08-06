@@ -139,7 +139,7 @@ public class LoginFragment extends Fragment {
                             String err_message = data.getString(ERR_MESSAGE_KEY,
                                     "An error occurred when registering");
                             Toast.makeText(getActivity(),
-                                        "Registration unsuccessful:\n" + err_message,
+                                        "Registration unsuccessful\n" + err_message,
                                             Toast.LENGTH_LONG)
                                             .show();
                             Log.e(LOG_TAG, "Unsuccessful registration: " + err_message);

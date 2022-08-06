@@ -3,6 +3,7 @@ package edu.byu.cs240.familymapclient;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,11 +18,18 @@ import results.PeopleResult;
 
 public class DataCache {
 
-    private static DataCache instance = new DataCache();
+    private static final DataCache instance = new DataCache();
 
     public static DataCache getInstance() {
         return instance;
     }
+
+    private final Map<String, Person> people; // a map from personID to Person
+    private final Map<String, Event> events; // a map from eventID to Event
+    private final Map<String, List<Event>> personEvents; // a map from personID to that person's events
+    private Set<String> paternalAncestors; // a map from personID to their paternal ancestors
+    private Set<String> maternalAncestors; // a map from personID to their maternal ancestors
+    private String userPersonID;
 
     private DataCache() {
         people = new HashMap<>();
@@ -31,12 +39,17 @@ public class DataCache {
         maternalAncestors = new HashSet<>();
     }
 
-    private Map<String, Person> people; // a map from personID to Person
-    private Map<String, Event> events; // a map from eventID to Event
-    private Map<String, List<Event>> personEvents; // a map from personID to that person's events
-    private Set<String> paternalAncestors; // a map from personID to their paternal ancestors
-    private Set<String> maternalAncestors; // a map from personID to their maternal ancestors
-    private String userPersonID;
+    public Set<String> getAncestors(Person p) {
+        Set<String> ancestorIDs = new HashSet<>();
+        if (p.getFatherID() != null) {
+            ancestorIDs.addAll(getAncestors(people.get(p.getFatherID())));
+        }
+        if (p.getMotherID() != null) {
+            ancestorIDs.addAll(getAncestors(people.get(p.getMotherID())));
+        }
+        ancestorIDs.add(p.getPersonID());
+        return ancestorIDs;
+    }
 
     public void resultToPeople(PeopleResult result) {
         this.people.clear();
@@ -134,44 +147,28 @@ public class DataCache {
         return people;
     }
 
-    public void setPeople(Map<String, Person> people) {
-        this.people = people;
-    }
-
     public Map<String, Event> getEvents() {
         return events;
-    }
-
-    public void setEvents(Map<String, Event> events) {
-        this.events = events;
     }
 
     public Map<String, List<Event>> getPersonEvents() {
         return personEvents;
     }
 
-    public void setPersonEvents(Map<String, List<Event>> personEvents) {
-        this.personEvents = personEvents;
-    }
-
-    public Set<String> getPaternalAncestors() {
+    public Set<String> getPaternalAncestorIDs() {
+        Person userPerson = people.get(userPersonID);
+        if (userPerson.getFatherID() != null) {
+            paternalAncestors = getAncestors(people.get(people.get(userPersonID).getFatherID()));
+        }
         return paternalAncestors;
     }
 
-    public void setPaternalAncestors(Set<String> paternalAncestors) {
-        this.paternalAncestors = paternalAncestors;
-    }
-
     public Set<String> getMaternalAncestors() {
+        Person userPerson = people.get(userPersonID);
+        if (userPerson.getMotherID() != null) {
+            maternalAncestors = getAncestors(people.get(people.get(userPersonID).getMotherID()));
+        }
         return maternalAncestors;
     }
 
-    public void setMaternalAncestors(Set<String> maternalAncestors) {
-        this.maternalAncestors = maternalAncestors;
-    }
-//    Settings settings;
-
-//    Person getPersonByID(PersonID id) {}
-//    Event getEventByID(EventID id) {}
-//    List<Event> getPersonEvents(PersonID id) {}
 }

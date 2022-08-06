@@ -62,4 +62,19 @@
     <string name="father">Father</string>
     <string name="spouse">Spouse</string>
     <string name="group_title">Group Title</string>
+    <string name="life_story_lines">Life Story Lines</string>
+    <string name="show_life_story_lines">Show life story lines</string>
+    <string name="family_tree_lines">Family Tree Lines</string>
+    <string name="show_family_tree_lines">Show family tree lines</string>
+    <string name="spouse_lines">Spouse Lines</string>
+    <string name="show_spouse_lines">Show Spouse Lines</string>
+    <string name="paternal_filter_descr">Filter by father\'s side of family</string>
+    <string name="father_s_side">Father\'s Side</string>
+    <string name="mother_s_side">Mother\'s Side</string>
+    <string name="maternal_filter_descr">Filter by mother\'s side of family</string>
+    <string name="male_events">Male Events</string>
+    <string name="filter_events_based_on_gender">Filter events based on gender</string>
+    <string name="female_events">Female Events</string>
+    <string name="logout">Logout</string>
+    <string name="return_to_login_screen">Return to login screen</string>
 </resources>

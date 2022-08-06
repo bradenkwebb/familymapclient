@@ -14,13 +14,11 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import model.Event;
@@ -59,26 +57,9 @@ public class PersonActivity extends AppCompatActivity {
         List<Person> immediateFamily = DataCache.getInstance().getImmediateFamily(personID);
 
         // Sort personEvents according to project specs
-        Collections.sort(personEvents, new Comparator<Event>() {
-            @Override
-            public int compare(Event e1, Event e2) {
-                if (e1.getEventType().equalsIgnoreCase("birth")) {
-                    return -1;
-                } else if (e2.getEventType().equalsIgnoreCase("birth")) {
-                    return 1;
-                } else if (e1.getEventType().equalsIgnoreCase("death")) {
-                    return 1;
-                } else if (e2.getEventType().equalsIgnoreCase("death")) {
-                    return -1;
-                } else if (e1.getYear() != e2.getYear()) {
-                    return e1.getYear().compareTo(e2.getYear());
-                }
-                return e1.getEventType().toLowerCase().compareTo(e2.getEventType().toLowerCase());
-            }
-        });
+        Collections.sort(personEvents, new EventComparator());
 
         expandableListView.setAdapter(new ExpandableListAdapter(personEvents, immediateFamily));
-
     }
 
     @Override
@@ -195,8 +176,7 @@ public class PersonActivity extends AppCompatActivity {
         private void intializeEventView(View eventItemView, final int childPosition) {
             TextView eventDescrView = eventItemView.findViewById(R.id.eventDescr);
             Event event = events.get(childPosition);
-            String descr = event.getEventType().toUpperCase() + ": " + event.getCity() + ", " +
-                            event.getCountry() + " (" + event.getYear() + ")";
+            String descr = eventDescr(event);
             eventDescrView.setText(descr);
 
             TextView assocPersonName = eventItemView.findViewById(R.id.assocPersonName);
@@ -214,30 +194,14 @@ public class PersonActivity extends AppCompatActivity {
         private void initializePersonView(View personItemView, final int childPosition) {
             Person p = people.get(childPosition);
             ImageView icon = personItemView.findViewById(R.id.personIcon);
-
-            if (p.getGender().equalsIgnoreCase("f")) {
-                Drawable genderIcon = new IconDrawable(PersonActivity.this,
-                        FontAwesomeIcons.fa_female).colorRes(R.color.female_icon_color).sizeDp(40);
-                icon.setImageDrawable(genderIcon);
-            } else {
-                Drawable genderIcon = new IconDrawable(PersonActivity.this,
-                        FontAwesomeIcons.fa_male).colorRes(R.color.male_icon_color).sizeDp(40);
-                icon.setImageDrawable(genderIcon);
-            }
+            Drawable genderIcon = getGenderedIcon(p);
+            icon.setImageDrawable(genderIcon);
 
             TextView nameView = personItemView.findViewById(R.id.personName);
             nameView.setText(p.getFirstName() + " " + p.getLastName());
 
             TextView relToPerson = personItemView.findViewById(R.id.relationship);
-            String rel = getString(R.string.child);
-            if (person.getMotherID() != null && person.getMotherID().equals(p.getPersonID())) {
-                rel = getString(R.string.mother);
-            } else if (person.getFatherID() != null && person.getFatherID().equals(p.getPersonID())) {
-                rel = getString(R.string.father);
-            } else if (person.getSpouseID() != null && person.getSpouseID().equals(p.getPersonID())) {
-                rel = getString(R.string.spouse);
-            }
-            relToPerson.setText(rel);
+            relToPerson.setText(getRelationship(person, p));
 
             personItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -262,5 +226,36 @@ public class PersonActivity extends AppCompatActivity {
         Intent intent = new Intent(this, EventActivity.class);
         intent.putExtra(EventActivity.EVENT_ID_KEY, eventID);
         startActivity(intent);
+    }
+
+    public static String eventDescr(Event event) {
+        return event.getEventType().toUpperCase() + ": " + event.getCity() + ", " +
+                event.getCountry() + " (" + event.getYear() + ")";
+    }
+
+    private String getRelationship(Person p1, Person p2) {
+        if (p1.getMotherID() != null && p1.getMotherID().equals(p2.getPersonID())) {
+            return getString(R.string.mother);
+        } else if (p1.getFatherID() != null && p1.getFatherID().equals(p2.getPersonID())) {
+            return getString(R.string.father);
+        } else if (p1.getSpouseID() != null & p1.getSpouseID().equals(p2.getPersonID())) {
+            return getString(R.string.spouse);
+        } else if (p2.getFatherID() != null && p2.getFatherID().equals(p1.getPersonID()) ||
+                p2.getMotherID() != null && p2.getMotherID().equals(p1.getPersonID())) {
+            return getString(R.string.child);
+        }
+        return "Not immediately related";
+    }
+
+    private Drawable getGenderedIcon(Person p) {
+        Drawable genderIcon;
+        if (p.getGender().equalsIgnoreCase("f")) {
+            genderIcon = new IconDrawable(PersonActivity.this,
+                    FontAwesomeIcons.fa_female).colorRes(R.color.female_color).sizeDp(40);
+        } else {
+            genderIcon = new IconDrawable(PersonActivity.this,
+                    FontAwesomeIcons.fa_male).colorRes(R.color.male_color).sizeDp(40);
+        }
+        return genderIcon;
     }
 }

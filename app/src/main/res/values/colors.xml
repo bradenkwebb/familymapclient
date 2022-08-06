@@ -8,6 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#bebebe</color>
-    <color name="male_icon_color">#FFA500</color>
-    <color name="female_icon_color">#5ced73</color>
+    <color name="male_color">#FFA500</color>
+    <color name="female_color">#5ced73</color>
+    <color name="purple">#B833FF</color>
+    <color name="orange">#F97525</color>
 </resources>
