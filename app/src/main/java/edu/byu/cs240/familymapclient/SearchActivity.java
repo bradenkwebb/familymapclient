@@ -110,7 +110,7 @@ public class SearchActivity extends AppCompatActivity {
             View view;
 
             if (viewType == PERSON_VIEW_TYPE) {
-                view = getLayoutInflater().inflate(R.layout.person_item, parent, false);
+                view = getLayoutInflater().inflate(R.layout.person_search_item, parent, false);
             } else {
                 view = getLayoutInflater().inflate(R.layout.event_item, parent, false);
             }
@@ -140,7 +140,6 @@ public class SearchActivity extends AppCompatActivity {
     private class SearchViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final ImageView genderedIcon;
-        private final TextView relationship;
         private final TextView personName;
         private final TextView descr;
 
@@ -162,10 +161,8 @@ public class SearchActivity extends AppCompatActivity {
                 personName = itemView.findViewById(R.id.assocPersonName);
                 descr = itemView.findViewById(R.id.eventDescr);
                 genderedIcon = null;
-                relationship = null;
             } else if (viewType == PERSON_VIEW_TYPE) {
                 genderedIcon = itemView.findViewById(R.id.personIcon);
-                relationship = itemView.findViewById(R.id.relationship);
                 personName = itemView.findViewById(R.id.personName);
                 descr = null;
             } else {
@@ -183,7 +180,6 @@ public class SearchActivity extends AppCompatActivity {
         private void bind (Person person) {
             this.person = person;
             personName.setText(person.getFirstName() + " " + person.getLastName());
-            relationship.setText(getRelationship(this.person, person));
             genderedIcon.setImageDrawable(getGenderedIcon(person));
         }
 

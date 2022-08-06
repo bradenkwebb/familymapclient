@@ -153,6 +153,7 @@ public class DataCache {
     }
 
     public Map<String, List<Event>> getPersonEvents() {
+        generatePersonEvents();
         return personEvents;
     }
 
