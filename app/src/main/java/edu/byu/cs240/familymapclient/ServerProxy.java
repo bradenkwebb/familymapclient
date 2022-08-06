@@ -2,33 +2,27 @@ package edu.byu.cs240.familymapclient;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import model.Event;
 import model.Person;
 import requests.LoginRequest;
 import requests.RegisterRequest;
-import requests.Request;
 import results.AllEventsResult;
 import results.LoginResult;
 import results.PeopleResult;
-import results.PersonResult;
-import results.RegisterResult;
-import results.Result;
 
-public class ServerProxy { // also known as ServerFacade
+public class ServerProxy {
 
     private static final String LOG_TAG = "ServerProxy";
     private static String serverHost;
@@ -162,20 +156,6 @@ public class ServerProxy { // also known as ServerFacade
         }
     }
 
-    // THIS IS DUPLICATE CODE
-    private void writeString(String str, OutputStream os) throws IOException {
-        OutputStreamWriter sw = new OutputStreamWriter(os);
-        sw.write(str);
-        sw.flush();
-    }
-
-    // ALSO DUPLICATE CODE
-    private <T> T deserialize(InputStream bodyStream, Class<T> classType) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(bodyStream, StandardCharsets.UTF_8));
-        Gson gson = new Gson();
-        return gson.fromJson(br, classType);
-    }
-
     public static String getServerHost() {
         return serverHost;
     }
@@ -192,10 +172,17 @@ public class ServerProxy { // also known as ServerFacade
         ServerProxy.serverPort = serverPort;
     }
 
-//           DON'T WORRY ABOUT THESE, THEY SHOULDN'T BE NEEDED
-//    clear
-//    fill
-//    getPerson
-//    getEvent
-//    load
+    // THIS IS DUPLICATE CODE
+    private void writeString(String str, OutputStream os) throws IOException {
+        OutputStreamWriter sw = new OutputStreamWriter(os);
+        sw.write(str);
+        sw.flush();
+    }
+
+    // ALSO DUPLICATE CODE
+    private <T> T deserialize(InputStream bodyStream, Class<T> classType) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(bodyStream, StandardCharsets.UTF_8));
+        Gson gson = new Gson();
+        return gson.fromJson(br, classType);
+    }
 }

@@ -19,6 +19,7 @@ import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import model.Event;
@@ -50,10 +51,16 @@ public class PersonActivity extends AppCompatActivity {
             textView.setText(R.string.male);
         }
 
-
         ExpandableListView expandableListView = findViewById(R.id.personExpandableListView);
 
         List<Event> personEvents = DataCache.getInstance().getPersonEvents().get(personID);
+        for (Iterator<Event> iterator =personEvents.iterator(); iterator.hasNext();) {
+            Event e = iterator.next();
+            if (!Settings.getInstance().filter(e)) {
+                iterator.remove();
+            }
+        }
+
         List<Person> immediateFamily = DataCache.getInstance().getImmediateFamily(personID);
 
         // Sort personEvents according to project specs

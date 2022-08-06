@@ -30,8 +30,8 @@ import java.util.regex.Pattern;
 
 public class SearchActivity extends AppCompatActivity {
 
-    private static final int EVENT_VIEW_TYPE = 0;
-    private static final int PERSON_VIEW_TYPE = 1;
+    private static final int PERSON_VIEW_TYPE = 0;
+    private static final int EVENT_VIEW_TYPE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +43,8 @@ public class SearchActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<Event> events = new ArrayList<>(DataCache.getInstance().getEvents().values());
-        List<Person> people = new ArrayList<>(DataCache.getInstance().getPeople().values());
+        List<Event> events = new ArrayList<>();
+        List<Person> people = new ArrayList<>();
 
         SearchAdapter adapter = new SearchAdapter(events, people);
         recyclerView.setAdapter(adapter);
@@ -52,15 +52,20 @@ public class SearchActivity extends AppCompatActivity {
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
                 List<Event> eventResults = new ArrayList<>();
                 List<Person> personResults = new ArrayList<>();
                 Pattern pattern = Pattern.compile(s, Pattern.CASE_INSENSITIVE);
-                for (Person person : people) {
+                for (Person person : DataCache.getInstance().getPeople().values()) {
                     if (pattern.matcher(person.getFirstName() + " " + person.getLastName()).find()){
                         personResults.add(person);
                     }
                 }
-                for (Event event : filteredEvents()) {
+                for (Event event : DataCache.getInstance().filteredEvents()) {
                     if (pattern.matcher(event.getEventType()).find()) {
                         eventResults.add(event);
                     } else if (pattern.matcher(event.getCity()).find()) {
@@ -73,11 +78,6 @@ public class SearchActivity extends AppCompatActivity {
                 }
                 SearchAdapter adapter = new SearchAdapter(eventResults, personResults);
                 recyclerView.setAdapter(adapter);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
                 return false;
             }
         });
@@ -109,21 +109,26 @@ public class SearchActivity extends AppCompatActivity {
         public SearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
 
-            if (viewType == EVENT_VIEW_TYPE) {
-                view = getLayoutInflater().inflate(R.layout.event_item, parent, false);
-            } else {
+            if (viewType == PERSON_VIEW_TYPE) {
                 view = getLayoutInflater().inflate(R.layout.person_item, parent, false);
+            } else {
+                view = getLayoutInflater().inflate(R.layout.event_item, parent, false);
             }
             return new SearchViewHolder(view, viewType);
         }
 
         @Override
         public void onBindViewHolder(@NonNull SearchViewHolder holder, int position) {
-            if (position < events.size()) {
-                holder.bind(events.get(position));
+            if (position < people.size()) {
+                holder.bind(people.get(position));
             } else {
-                holder.bind(people.get(position - events.size()));
+                holder.bind(events.get(position - people.size()));
             }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position < people.size() ? PERSON_VIEW_TYPE : EVENT_VIEW_TYPE;
         }
 
         @Override
@@ -145,6 +150,9 @@ public class SearchActivity extends AppCompatActivity {
 
         SearchViewHolder(View view, int viewType) {
             super(view);
+
+            System.out.println(viewType);
+
             this.viewType = viewType;
 
             itemView.setClickable(true);
@@ -165,7 +173,6 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
 
-        @SuppressLint("SetTextI18n")
         private void bind(Event event) {
             this.event = event;
             Person assocPerson = DataCache.getInstance().getPeople().get(event.getPersonID());
@@ -231,14 +238,14 @@ public class SearchActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private List<Event> filteredEvents() {
-        List<Event> filtered = new ArrayList<>();
-        Collection<Event> unfiltered = DataCache.getInstance().getEvents().values();
-        for (Event event: unfiltered) {
-            if (Settings.getInstance().filter(event)){
-                filtered.add(event);
-            }
-        }
-        return filtered;
-    }
+//    private List<Event> filteredEvents() {
+//        List<Event> filtered = new ArrayList<>();
+//        Collection<Event> unfiltered = DataCache.getInstance().getEvents().values();
+//        for (Event event: unfiltered) {
+//            if (Settings.getInstance().filter(event)){
+//                filtered.add(event);
+//            }
+//        }
+//        return filtered;
+//    }
 }
