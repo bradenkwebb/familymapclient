@@ -161,12 +161,6 @@ public class MapFragment extends Fragment implements
 
     @Override
     public void onMapLoaded() {
-        // You probably don't need this callback. It occurs after onMapReady and I have seen
-        // cases where you get an error when adding markers or otherwise interacting with the map in
-        // onMapReady(...) because the map isn't really all the way ready. If you see that, just
-        // move all code where you interact with the map (everything after
-        // map.setOnMapLoadedCallback(...) above) to here.
-
         if (getArguments() != null) {
             String initEventID = getArguments().getString(EventActivity.EVENT_ID_KEY);
             if (initEventID != null) {

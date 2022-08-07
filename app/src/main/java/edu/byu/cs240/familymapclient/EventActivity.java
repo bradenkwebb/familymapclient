@@ -3,18 +3,11 @@ package edu.byu.cs240.familymapclient;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.Map;
-
-import model.Event;
 
 public class EventActivity extends AppCompatActivity {
 
@@ -38,8 +31,6 @@ public class EventActivity extends AppCompatActivity {
                 .replace(R.id.eventFragmentFrame, fragment)
                 .commit();
     }
-
-    // this could be useful https://byu.app.box.com/s/5fvc6p5mbhefb7x1wt21euhs6no6qfll
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

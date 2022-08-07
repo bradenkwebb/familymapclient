@@ -1,10 +1,8 @@
 package edu.byu.cs240.familymapclient;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +11,6 @@ import java.util.Set;
 
 import model.Event;
 import model.Person;
-import model.User;
 import results.AllEventsResult;
 import results.PeopleResult;
 
@@ -30,8 +27,11 @@ public class DataCache {
     private final Map<String, List<Event>> personEvents; // a map from personID to that person's events
     private Set<String> paternalAncestors; // a map from personID to their paternal ancestors
     private Set<String> maternalAncestors; // a map from personID to their maternal ancestors
-    private String userPersonID;
+    private String userPersonID; // the personID of the person corresponding to the user
 
+    /**
+     * The private constructor, which should run only when getInstance() is called for the first time.
+     */
     private DataCache() {
         people = new HashMap<>();
         events = new HashMap<>();
@@ -40,18 +40,12 @@ public class DataCache {
         maternalAncestors = new HashSet<>();
     }
 
-    public Set<String> getAncestors(Person p) {
-        Set<String> ancestorIDs = new HashSet<>();
-        if (p.getFatherID() != null) {
-            ancestorIDs.addAll(getAncestors(people.get(p.getFatherID())));
-        }
-        if (p.getMotherID() != null) {
-            ancestorIDs.addAll(getAncestors(people.get(p.getMotherID())));
-        }
-        ancestorIDs.add(p.getPersonID());
-        return ancestorIDs;
-    }
-
+    /**
+     * Stores the information contained in a PeopleResult object in the DataCache, as a map from
+     * their personIDs to Person objects.
+     *
+     * @param result the PeopleResult object to parse
+     */
     public void resultToPeople(PeopleResult result) {
         this.people.clear();
 
@@ -61,6 +55,12 @@ public class DataCache {
         }
     }
 
+    /**
+     * Stores the information contained in an AllEventsResult object in the DataCache, as a map from
+     * their eventIDs to Events.
+     *
+     * @param result the AllEventsResult object to parse
+     */
     public void resultToEvents(AllEventsResult result){
         this.events.clear();
 
@@ -70,37 +70,43 @@ public class DataCache {
         }
     }
 
+    /**
+     * Returns a list of Person objects corresponding to the immediate family members of the
+     * person with ID personID.
+     * @param personID the person whose immediate family we're searching for
+     * @return a list of Person objects
+     */
     public List<Person> getImmediateFamily(String personID) {
         List<Person> immediateFamily = new ArrayList<>();
-        Map<String, Person> allPeople = DataCache.getInstance().getPeople();
-        Person person = allPeople.get(personID);
+        Person person = people.get(personID);
 
         assert person != null;
         if (person.getMotherID() != null) {
-            immediateFamily.add(allPeople.get(person.getMotherID()));
+            immediateFamily.add(people.get(person.getMotherID()));
         }
         if (person.getFatherID() != null) {
-            immediateFamily.add(allPeople.get(person.getFatherID()));
+            immediateFamily.add(people.get(person.getFatherID()));
         }
         if (person.getSpouseID() != null) {
-            immediateFamily.add(allPeople.get(person.getSpouseID()));
+            immediateFamily.add(people.get(person.getSpouseID()));
         }
-        if (person.getGender().equalsIgnoreCase("f")) {
-            for (Person p : allPeople.values()) {
-                if (p.getMotherID() != null && p.getMotherID().equals(personID)) {
-                    immediateFamily.add(p);
-                }
+        for (Person p : people.values()) {
+            if (p.getMotherID() != null && p.getMotherID().equals(personID)) {
+                immediateFamily.add(p);
             }
-        } else {
-            for (Person p : allPeople.values()) {
-                if (p.getFatherID() != null && p.getFatherID().equals(personID)) {
-                    immediateFamily.add(p);
-                }
+            if (p.getFatherID() != null && p.getFatherID().equals(personID)) {
+                immediateFamily.add(p);
             }
         }
         return immediateFamily;
     }
 
+    /**
+     * Returns a map from eventTypes to colors, where each color is maximally (and equally) distant
+     * from the others.
+     *
+     * @return a map from eventType (Strings) to color (Floats)
+     */
     public Map<String, Float> eventColors() {
         Map<String, Float> eventColors = new HashMap<>();
         Set<String> eventTypes = eventTypes();
@@ -114,7 +120,10 @@ public class DataCache {
         return eventColors;
     }
 
-    // THERE COULD DEFINITELY BE BUGS HERE
+    /**
+     * Wipes the data in the existing personEvents data member, and re-calculates the map from
+     * the events dataset
+     */
     public void generatePersonEvents() {
         personEvents.clear();
         for (Map.Entry<String, Event> entry : events.entrySet()) {
@@ -128,43 +137,31 @@ public class DataCache {
         }
     }
 
-    public String getUserPersonID() {
-        return userPersonID;
-    }
-
-    public Set<String> eventTypes() {
-        HashSet<String> types = new HashSet<>();
-        for (Event event : events.values()) {
-            types.add(event.getEventType());
-        }
-        return types;
-    }
-
-    public void setUserPersonID(String userPersonID) {
-        this.userPersonID = userPersonID;
-    }
-
-    public Map<String, Person> getPeople() {
-        return people;
-    }
-
-    public Map<String, Event> getEvents() {
-        return events;
-    }
-
+    /**
+     * A getter, but re-generates the data member each time it's called for
+     * @return the map from each personID to a list of their corresponding Event objects
+     */
     public Map<String, List<Event>> getPersonEvents() {
         generatePersonEvents();
         return personEvents;
     }
 
+    /**
+     * Gets the set of personIDs corresponding to the userPerson's paternal ancestors.
+     * @return a set of Strings
+     */
     public Set<String> getPaternalAncestorIDs() {
         Person userPerson = people.get(userPersonID);
-        if (userPerson.getFatherID() != null) {
+        if (userPerson != null && userPerson.getFatherID() != null) {
             paternalAncestors = getAncestors(people.get(people.get(userPersonID).getFatherID()));
         }
         return paternalAncestors;
     }
 
+    /**
+     * Gets the set of personIDs corresponding to the userPerson's maternal ancestors.
+     * @return a set of Strings
+     */
     public Set<String> getMaternalAncestors() {
         Person userPerson = people.get(userPersonID);
         if (userPerson.getMotherID() != null) {
@@ -173,6 +170,12 @@ public class DataCache {
         return maternalAncestors;
     }
 
+    /**
+     * Checks to see if each event in the data member "events" is valid under the current settings,
+     * and if it is, returns that event as part of a list.
+     *
+     * @return a list of Event objects
+     */
     public List<Event> filteredEvents() {
         List<Event> filtered = new ArrayList<>();
         Collection<Event> unfiltered = DataCache.getInstance().getEvents().values();
@@ -184,4 +187,41 @@ public class DataCache {
         return filtered;
     }
 
+    // GETTERS, SETTERS, AND PRIVATE METHODS
+
+    public void setUserPersonID(String userPersonID) {
+        this.userPersonID = userPersonID;
+    }
+
+    public String getUserPersonID() {
+        return userPersonID;
+    }
+
+    public Map<String, Person> getPeople() {
+        return people;
+    }
+
+    public Map<String, Event> getEvents() {
+        return events;
+    }
+
+    private Set<String> getAncestors(Person p) {
+        Set<String> ancestorIDs = new HashSet<>();
+        if (p.getFatherID() != null) {
+            ancestorIDs.addAll(getAncestors(people.get(p.getFatherID())));
+        }
+        if (p.getMotherID() != null) {
+            ancestorIDs.addAll(getAncestors(people.get(p.getMotherID())));
+        }
+        ancestorIDs.add(p.getPersonID());
+        return ancestorIDs;
+    }
+
+    private Set<String> eventTypes() {
+        HashSet<String> types = new HashSet<>();
+        for (Event event : events.values()) {
+            types.add(event.getEventType());
+        }
+        return types;
+    }
 }
