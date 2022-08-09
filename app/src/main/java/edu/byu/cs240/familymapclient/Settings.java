@@ -19,15 +19,11 @@ public class Settings {
     private boolean showFamTreeLines;
     private boolean showSpouseLines;
 
-    public void setLogout(boolean logout) {
-        this.logout = logout;
-    }
-
     private boolean logout;
 
     public boolean filter(Event e) {
         Person p = DataCache.getInstance().getPeople().get(e.getPersonID());
-        if (p.getPersonID() != DataCache.getInstance().getUserPersonID()) {
+        if (!p.getPersonID().equals(DataCache.getInstance().getUserPersonID())) {
             if (!includePaternalAncestors &&
                     DataCache.getInstance().getPaternalAncestorIDs().contains(p.getPersonID())) {
                 return  false;
@@ -39,10 +35,7 @@ public class Settings {
         if (!includeMaleEvents && p.getGender().equalsIgnoreCase("m")) {
             return false;
         }
-        if (!includeFemaleEvents && p.getGender().equalsIgnoreCase("f")) {
-            return false;
-        }
-        return true;
+        return includeFemaleEvents || !p.getGender().equalsIgnoreCase("f");
     }
 
     private Settings() {
@@ -118,9 +111,11 @@ public class Settings {
 
     public void toggleShowLifeStoryLines() { showLifeStoryLines = !showLifeStoryLines; }
 
-    public void setShowLifeStoryLines(boolean showLifeStoryLines) {
-        this.showLifeStoryLines = showLifeStoryLines;
+    public boolean isShowSpouseLines() {
+        return showSpouseLines;
     }
+
+    public void toggleShowSpouseLines() { showSpouseLines = !showSpouseLines;}
 
     public boolean isShowFamTreeLines() {
         return showFamTreeLines;
@@ -128,15 +123,13 @@ public class Settings {
 
     public void toggleShowFamTreeLines() { showFamTreeLines = !showFamTreeLines; }
 
+    public void setShowLifeStoryLines(boolean showLifeStoryLines) {
+        this.showLifeStoryLines = showLifeStoryLines;
+    }
+
     public void setShowFamTreeLines(boolean showFamTreeLines) {
         this.showFamTreeLines = showFamTreeLines;
     }
-
-    public boolean isShowSpouseLines() {
-        return showSpouseLines;
-    }
-
-    public void toggleShowSpouseLines() { showSpouseLines = !showSpouseLines;}
 
     public void setShowSpouseLines(boolean showSpouseLines) {
         this.showSpouseLines = showSpouseLines;
@@ -144,5 +137,9 @@ public class Settings {
 
     public boolean isLogout() {
         return logout;
+    }
+
+    public void setLogout(boolean logout) {
+        this.logout = logout;
     }
 }

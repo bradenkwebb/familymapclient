@@ -225,5 +225,12 @@ public class DataCache {
         return types;
     }
 
-
+    public void clear() {
+        people.clear();
+        events.clear();
+        personEvents.clear();
+        paternalAncestors.clear();
+        maternalAncestors.clear();
+        userPersonID = null;
+    }
 }

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import model.Person;
+import requests.LoginRequest;
 import results.PeopleResult;
 
 /**
@@ -42,6 +43,8 @@ public class DataCacheTest {
 
     @BeforeEach
     public void setUp() {
+        System.out.println("setUp() called");
+
         braden = new Person("bkw", "bkwebb23", "Braden",
                 "Webb", "m", "jdw", "slw", "ace");
         anna = new Person("ace", "bkwebb23", "Anna",
@@ -55,7 +58,12 @@ public class DataCacheTest {
         susan = new Person("sw", "bkwebb23", "Susan",
                 "Webb", "f", "joyce", "walt?", "klw");
 
-        System.out.println("setUp() called");
+//        System.out.println("setUp() called");
+//        LoginRequest request = new LoginRequest();
+//        request.setUsername("sheila");
+//        request.setPassword("parker");
+//        new ServerProxy().login(request);
+
     }
 
     @AfterEach
