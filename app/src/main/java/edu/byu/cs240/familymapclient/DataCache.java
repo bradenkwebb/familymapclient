@@ -25,8 +25,8 @@ public class DataCache {
     private final Map<String, Person> people; // a map from personID to Person
     private final Map<String, Event> events; // a map from eventID to Event
     private final Map<String, List<Event>> personEvents; // a map from personID to that person's events
-    private Set<String> paternalAncestors; // a map from personID to their paternal ancestors
-    private Set<String> maternalAncestors; // a map from personID to their maternal ancestors
+    private Set<String> patAncestorIDs; // a set of personIDs corresponding to paternal ancestors
+    private Set<String> matAncestorIDs; // a set of personIDs corresponding to maternal ancestors
     private String userPersonID; // the personID of the person corresponding to the user
 
     /**
@@ -36,8 +36,8 @@ public class DataCache {
         people = new HashMap<>();
         events = new HashMap<>();
         personEvents = new HashMap<>();
-        paternalAncestors = new HashSet<>();
-        maternalAncestors = new HashSet<>();
+        patAncestorIDs = new HashSet<>();
+        matAncestorIDs = new HashSet<>();
     }
 
     /**
@@ -150,24 +150,24 @@ public class DataCache {
      * Gets the set of personIDs corresponding to the userPerson's paternal ancestors.
      * @return a set of Strings
      */
-    public Set<String> getPaternalAncestorIDs() {
+    public Set<String> getPatAncestorIDs() {
         Person userPerson = people.get(userPersonID);
         if (userPerson != null && userPerson.getFatherID() != null) {
-            paternalAncestors = getAncestors(people.get(people.get(userPersonID).getFatherID()));
+            patAncestorIDs = getAncestors(people.get(people.get(userPersonID).getFatherID()));
         }
-        return paternalAncestors;
+        return patAncestorIDs;
     }
 
     /**
      * Gets the set of personIDs corresponding to the userPerson's maternal ancestors.
      * @return a set of Strings
      */
-    public Set<String> getMaternalAncestors() {
+    public Set<String> getMatAncestorIDs() {
         Person userPerson = people.get(userPersonID);
         if (userPerson.getMotherID() != null) {
-            maternalAncestors = getAncestors(people.get(people.get(userPersonID).getMotherID()));
+            matAncestorIDs = getAncestors(people.get(people.get(userPersonID).getMotherID()));
         }
-        return maternalAncestors;
+        return matAncestorIDs;
     }
 
     /**
@@ -229,8 +229,8 @@ public class DataCache {
         people.clear();
         events.clear();
         personEvents.clear();
-        paternalAncestors.clear();
-        maternalAncestors.clear();
+        patAncestorIDs.clear();
+        matAncestorIDs.clear();
         userPersonID = null;
     }
 }

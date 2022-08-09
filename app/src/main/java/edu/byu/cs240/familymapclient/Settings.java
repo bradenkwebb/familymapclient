@@ -25,10 +25,10 @@ public class Settings {
         Person p = DataCache.getInstance().getPeople().get(e.getPersonID());
         if (!p.getPersonID().equals(DataCache.getInstance().getUserPersonID())) {
             if (!includePaternalAncestors &&
-                    DataCache.getInstance().getPaternalAncestorIDs().contains(p.getPersonID())) {
+                    DataCache.getInstance().getPatAncestorIDs().contains(p.getPersonID())) {
                 return  false;
             } else if (!includeMaternalAncestors &&
-                    DataCache.getInstance().getMaternalAncestors().contains(p.getPersonID())) {
+                    DataCache.getInstance().getMatAncestorIDs().contains(p.getPersonID())) {
                 return false;
             }
         }

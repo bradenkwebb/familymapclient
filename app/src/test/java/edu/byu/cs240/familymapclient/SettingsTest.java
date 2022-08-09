@@ -21,7 +21,7 @@ public class SettingsTest {
         LoginRequest request = new LoginRequest();
         request.setUsername("sheila");
         request.setPassword("parker");
-        ServerProxy.setServerHost("127.0.0.1");
+        ServerProxy.setServerHost("localhost");
         ServerProxy.setServerPort("8080");
         LoginResult result = new ServerProxy().login(request);
         DataCache.getInstance().setUserPersonID(result.getPersonID());

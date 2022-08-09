@@ -46,11 +46,11 @@ public class ServerProxy {
 
             reqBody.close();
 
-            InputStream responseBody = http.getInputStream();
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                InputStream responseBody = http.getInputStream();
                 System.out.println("Login successful");
                 result = deserialize(responseBody, LoginResult.class);
-                populateDataCache(result.getAuthtoken());
+                populateDataCache(result);
             } else {
                 System.out.println("Error: " + http.getResponseMessage());
                 InputStream respBody = http.getErrorStream();
@@ -86,7 +86,7 @@ public class ServerProxy {
                 Log.d(LOG_TAG, "Registration successful");
                 respBody = http.getInputStream();
                 result = deserialize(respBody, LoginResult.class);
-                populateDataCache(result.getAuthtoken());
+                populateDataCache(result);
             } else {
                 Log.e(LOG_TAG, "Unsuccessful registration: " + http.getResponseMessage());
                 respBody = http.getErrorStream();
@@ -125,9 +125,10 @@ public class ServerProxy {
                 "}";
     }
 
-    private void populateDataCache(String authToken) {
-        getData(authToken, Person.class);
-        getData(authToken, Event.class);
+    private void populateDataCache(LoginResult r) {
+        DataCache.getInstance().setUserPersonID(r.getPersonID());
+        getData(r.getAuthtoken(), Person.class);
+        getData(r.getAuthtoken(), Event.class);
         DataCache.getInstance().generatePersonEvents();
     }
 
