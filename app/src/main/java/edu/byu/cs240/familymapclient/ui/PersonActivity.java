@@ -1,4 +1,4 @@
-package edu.byu.cs240.familymapclient;
+package edu.byu.cs240.familymapclient.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +22,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.byu.cs240.familymapclient.DataCache;
+import edu.byu.cs240.familymapclient.EventComparator;
+import edu.byu.cs240.familymapclient.R;
+import edu.byu.cs240.familymapclient.Settings;
 import model.Event;
 import model.Person;
 

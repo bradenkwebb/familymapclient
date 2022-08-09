@@ -1,4 +1,4 @@
-package edu.byu.cs240.familymapclient;
+package edu.byu.cs240.familymapclient.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import edu.byu.cs240.familymapclient.R;
 
 public class EventActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package edu.byu.cs240.familymapclient;
+package edu.byu.cs240.familymapclient.ui;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -37,6 +37,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.byu.cs240.familymapclient.DataCache;
+import edu.byu.cs240.familymapclient.EventComparator;
+import edu.byu.cs240.familymapclient.R;
+import edu.byu.cs240.familymapclient.Settings;
 import model.Event;
 import model.Person;
 

@@ -6,5 +6,5 @@
     android:id="@+id/eventFragmentFrame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EventActivity">
+    tools:context=".ui.EventActivity">
 </FrameLayout>

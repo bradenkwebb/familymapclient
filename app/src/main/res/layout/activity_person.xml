@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="start"
     android:orientation="vertical"
-    tools:context=".PersonActivity">
+    tools:context=".ui.PersonActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

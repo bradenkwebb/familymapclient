@@ -1,11 +1,10 @@
-package edu.byu.cs240.familymapclient;
+package edu.byu.cs240.familymapclient.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -20,12 +19,13 @@ import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import edu.byu.cs240.familymapclient.DataCache;
+import edu.byu.cs240.familymapclient.R;
 import model.Event;
 import model.Person;
-import java.util.regex.Matcher;
+
 import java.util.regex.Pattern;
 
 public class SearchActivity extends AppCompatActivity {

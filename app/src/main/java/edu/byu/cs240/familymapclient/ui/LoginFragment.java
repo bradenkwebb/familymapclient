@@ -1,4 +1,4 @@
-package edu.byu.cs240.familymapclient;
+package edu.byu.cs240.familymapclient.ui;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -19,6 +19,9 @@ import androidx.fragment.app.Fragment;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import edu.byu.cs240.familymapclient.DataCache;
+import edu.byu.cs240.familymapclient.R;
+import edu.byu.cs240.familymapclient.ServerProxy;
 import model.Person;
 import requests.LoginRequest;
 import requests.RegisterRequest;

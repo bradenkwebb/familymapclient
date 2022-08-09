@@ -1,4 +1,4 @@
-package edu.byu.cs240.familymapclient;
+package edu.byu.cs240.familymapclient.ui;
 
 import android.os.Bundle;
 
@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentManager;
 
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
+
+import edu.byu.cs240.familymapclient.R;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.Listener {
 
