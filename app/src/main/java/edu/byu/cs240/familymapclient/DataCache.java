@@ -121,23 +121,6 @@ public class DataCache {
     }
 
     /**
-     * Wipes the data in the existing personEvents data member, and re-calculates the map from
-     * the events dataset
-     */
-    public void generatePersonEvents() {
-        personEvents.clear();
-        for (Map.Entry<String, Event> entry : events.entrySet()) {
-            String personID = entry.getValue().getPersonID();
-            if (personEvents.containsKey(personID) && personEvents.get(personID) != null) {
-                personEvents.get(personID).add(entry.getValue());
-            } else {
-                personEvents.put(personID,
-                        new ArrayList<>(Collections.singletonList(entry.getValue())));
-            }
-        }
-    }
-
-    /**
      * A getter, but re-generates the data member each time it's called for
      * @return the map from each personID to a list of their corresponding Event objects
      */
@@ -188,7 +171,6 @@ public class DataCache {
     }
 
     // GETTERS, SETTERS, AND PRIVATE METHODS
-
     public void setUserPersonID(String userPersonID) {
         this.userPersonID = userPersonID;
     }
@@ -223,6 +205,23 @@ public class DataCache {
             types.add(event.getEventType());
         }
         return types;
+    }
+
+    /**
+     * Wipes the data in the existing personEvents data member, and re-calculates the map from
+     * the events dataset
+     */
+    private void generatePersonEvents() {
+        personEvents.clear();
+        for (Map.Entry<String, Event> entry : events.entrySet()) {
+            String personID = entry.getValue().getPersonID();
+            if (personEvents.containsKey(personID) && personEvents.get(personID) != null) {
+                personEvents.get(personID).add(entry.getValue());
+            } else {
+                personEvents.put(personID,
+                        new ArrayList<>(Collections.singletonList(entry.getValue())));
+            }
+        }
     }
 
     public void clear() {

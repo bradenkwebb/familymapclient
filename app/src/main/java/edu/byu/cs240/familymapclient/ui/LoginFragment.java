@@ -70,7 +70,6 @@ public class LoginFragment extends Fragment {
                         Bundle data = message.getData();
                         if (data.getBoolean(SUCCESS_KEY, false)) {
                             listener.notifyDone();
-                            Toast.makeText(getActivity(), "Login successful", Toast.LENGTH_SHORT).show();
                             setUsersPersonID(data);
                         } else {
                             Toast.makeText(getActivity(),

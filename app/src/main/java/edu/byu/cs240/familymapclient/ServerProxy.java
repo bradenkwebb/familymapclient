@@ -129,7 +129,7 @@ public class ServerProxy {
         DataCache.getInstance().setUserPersonID(r.getPersonID());
         getData(r.getAuthtoken(), Person.class);
         getData(r.getAuthtoken(), Event.class);
-        DataCache.getInstance().generatePersonEvents();
+//        DataCache.getInstance().generatePersonEvents();
     }
 
     private <T> void getData(String authToken, Class<T> classType) {
