@@ -39,11 +39,7 @@ public class ServerProxy {
             http.setDoOutput(true); // Indicates that the request contains a request body
             http.addRequestProperty("Accept", "application/json");
             http.connect();
-            String reqData =
-                            "{" +
-                                "\"username\": \"" + request.getUsername() + "\"," +
-                                "\"password\": \"" + request.getPassword() + "\"" +
-                            "}";
+            String reqData = makeLoginJson(request);
 
             OutputStream reqBody = http.getOutputStream();
             writeString(reqData, reqBody);
@@ -77,15 +73,7 @@ public class ServerProxy {
             http.setDoOutput(true); // Indicates that the request contains a request body
             http.addRequestProperty("Accept", "application/json");
             http.connect();
-            String reqData =
-                    "{" +
-                            "\"username\": \"" + request.getUsername() + "\"," +
-                            "\"password\": \"" + request.getPassword() + "\"," +
-                            "\"email\": \"" + request.getEmail() + "\"," +
-                            "\"firstName\": \"" + request.getFirstName() + "\"," +
-                            "\"lastName\": \"" + request.getLastName() + "\"," +
-                            "\"gender\": \"" + request.getGender() + "\"" +
-                    "}";
+            String reqData = makeRegisterJson(request);
 
             OutputStream reqBody = http.getOutputStream();
             writeString(reqData, reqBody);
@@ -109,6 +97,32 @@ public class ServerProxy {
         }
 
         return result;
+    }
+
+    public static void setServerHost(String serverHost) {
+        ServerProxy.serverHost = serverHost;
+    }
+
+    public static void setServerPort(String serverPort) {
+        ServerProxy.serverPort = serverPort;
+    }
+
+    private String makeLoginJson(LoginRequest request) {
+        return  "{" +
+                        "\"username\": \"" + request.getUsername() + "\"," +
+                        "\"password\": \"" + request.getPassword() + "\"" +
+                "}";
+    }
+
+    private String makeRegisterJson(RegisterRequest request) {
+        return  "{" +
+                        "\"username\": \"" + request.getUsername() + "\"," +
+                        "\"password\": \"" + request.getPassword() + "\"," +
+                        "\"email\": \"" + request.getEmail() + "\"," +
+                        "\"firstName\": \"" + request.getFirstName() + "\"," +
+                        "\"lastName\": \"" + request.getLastName() + "\"," +
+                        "\"gender\": \"" + request.getGender() + "\"" +
+                "}";
     }
 
     private void populateDataCache(String authToken) {
@@ -147,7 +161,7 @@ public class ServerProxy {
 
             if (classType == Person.class) {
                 DataCache.getInstance().resultToPeople(deserialize(response, PeopleResult.class));
-            } else if (classType == Event.class) {
+            } else {
                 DataCache.getInstance().resultToEvents(deserialize(response, AllEventsResult.class));
             }
         } catch (IOException e) {
@@ -156,30 +170,12 @@ public class ServerProxy {
         }
     }
 
-    public static String getServerHost() {
-        return serverHost;
-    }
-
-    public static void setServerHost(String serverHost) {
-        ServerProxy.serverHost = serverHost;
-    }
-
-    public static String getServerPort() {
-        return serverPort;
-    }
-
-    public static void setServerPort(String serverPort) {
-        ServerProxy.serverPort = serverPort;
-    }
-
-    // THIS IS DUPLICATE CODE
     private void writeString(String str, OutputStream os) throws IOException {
         OutputStreamWriter sw = new OutputStreamWriter(os);
         sw.write(str);
         sw.flush();
     }
 
-    // ALSO DUPLICATE CODE
     private <T> T deserialize(InputStream bodyStream, Class<T> classType) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(bodyStream, StandardCharsets.UTF_8));
         Gson gson = new Gson();

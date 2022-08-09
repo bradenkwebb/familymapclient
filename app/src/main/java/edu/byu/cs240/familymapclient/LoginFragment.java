@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +20,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import model.Person;
-import model.User;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import results.LoginResult;
-import results.PeopleResult;
 
 
 public class LoginFragment extends Fragment {
@@ -62,18 +59,16 @@ public class LoginFragment extends Fragment {
                 ServerProxy.setServerHost(serverHost.getText().toString());
                 ServerProxy.setServerPort(serverPort.getText().toString());
 
-                // I should fix this suppression
                 @SuppressLint("HandlerLeak")Handler uiThreadMessageHandler = new Handler() {
                     @Override
                     public void handleMessage(Message message) {
                         Log.d(LOG_TAG, "Handling message for login");
 
-                        // Add code here to react appropriately to the LoginResult
                         Bundle data = message.getData();
                         if (data.getBoolean(SUCCESS_KEY, false)) {
                             listener.notifyDone();
                             Toast.makeText(getActivity(), "Login successful", Toast.LENGTH_SHORT).show();
-                            displayName(data);
+                            setUsersPersonID(data);
                         } else {
                             Toast.makeText(getActivity(),
                                     "Login unsuccessful\n" +
@@ -118,13 +113,10 @@ public class LoginFragment extends Fragment {
                 String gender = genderButton.getText().toString();
                 gender = (gender.equalsIgnoreCase("female")) ? "f": "m";
 
-                // I should fix this suppression
                 @SuppressLint("HandlerLeak") Handler uiThreadMessageHandler = new Handler() {
                     @Override
                     public void handleMessage(Message message) {
                         Log.d(LOG_TAG, "Handling the registration message");
-
-                        // Add code here to react appropriately to the registerresult
                         Bundle data = message.getData();
                         if (data.getBoolean(SUCCESS_KEY, false)) {
                             listener.notifyDone();
@@ -134,7 +126,7 @@ public class LoginFragment extends Fragment {
                                             Toast.LENGTH_SHORT)
                                     .show();
 
-                            displayName(data);
+                            setUsersPersonID(data);
                         } else {
                             String err_message = data.getString(ERR_MESSAGE_KEY,
                                     "An error occurred when registering");
@@ -204,7 +196,7 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void displayName(Bundle data) {
+    private void setUsersPersonID(Bundle data) {
         String userPersonId = data.getString(PERSON_ID_KEY, "error");
         DataCache.getInstance().setUserPersonID(userPersonId);
         Person userPerson = DataCache.getInstance().getPeople().get(userPersonId);
@@ -213,7 +205,6 @@ public class LoginFragment extends Fragment {
                 userPerson.getFirstName() + " " + userPerson.getLastName(),
                 Toast.LENGTH_SHORT).show();
     }
-
 
     protected static Message toMessage(LoginResult result) {
         Message message = Message.obtain();

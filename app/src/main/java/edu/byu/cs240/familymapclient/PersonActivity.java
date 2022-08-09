@@ -54,17 +54,19 @@ public class PersonActivity extends AppCompatActivity {
         ExpandableListView expandableListView = findViewById(R.id.personExpandableListView);
 
         List<Event> personEvents = DataCache.getInstance().getPersonEvents().get(personID);
-        for (Iterator<Event> iterator =personEvents.iterator(); iterator.hasNext();) {
-            Event e = iterator.next();
-            if (!Settings.getInstance().filter(e)) {
-                iterator.remove();
+        if (personEvents != null) {
+            for (Iterator<Event> iterator = personEvents.iterator(); iterator.hasNext();) {
+                Event e = iterator.next();
+                if (!Settings.getInstance().filter(e)) {
+                    iterator.remove();
+                }
             }
+
+            // Sort personEvents according to project specs
+            Collections.sort(personEvents, new EventComparator());
         }
 
         List<Person> immediateFamily = DataCache.getInstance().getImmediateFamily(personID);
-
-        // Sort personEvents according to project specs
-        Collections.sort(personEvents, new EventComparator());
 
         expandableListView.setAdapter(new ExpandableListAdapter(personEvents, immediateFamily));
     }
@@ -166,7 +168,7 @@ public class PersonActivity extends AppCompatActivity {
             switch(groupPosition) {
                 case EVENT_GROUP_POSITION:
                     itemView = getLayoutInflater().inflate(R.layout.event_item, parent, false);
-                    intializeEventView(itemView, childPosition);
+                    initializeEventView(itemView, childPosition);
                     break;
                 case PEOPLE_GROUP_POSITION:
                     itemView = getLayoutInflater().inflate(R.layout.person_item, parent, false);
@@ -180,7 +182,7 @@ public class PersonActivity extends AppCompatActivity {
         }
 
         @SuppressLint("SetTextI18n")
-        private void intializeEventView(View eventItemView, final int childPosition) {
+        private void initializeEventView(View eventItemView, final int childPosition) {
             TextView eventDescrView = eventItemView.findViewById(R.id.eventDescr);
             Event event = events.get(childPosition);
             String descr = eventDescr(event);
@@ -189,12 +191,7 @@ public class PersonActivity extends AppCompatActivity {
             TextView assocPersonName = eventItemView.findViewById(R.id.assocPersonName);
             assocPersonName.setText(person.getFirstName() + " " + person.getLastName());
 
-            eventItemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    callEventActivity(event.getEventID());
-                }
-            });
+            eventItemView.setOnClickListener(v -> callEventActivity(event.getEventID()));
         }
 
         @SuppressLint("SetTextI18n")
@@ -210,11 +207,7 @@ public class PersonActivity extends AppCompatActivity {
             TextView relToPerson = personItemView.findViewById(R.id.relationship);
             relToPerson.setText(getRelationship(person, p));
 
-            personItemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    callPersonActivity(p.getPersonID());
-            };});
+            personItemView.setOnClickListener(v -> callPersonActivity(p.getPersonID()));
         }
 
         @Override
@@ -245,7 +238,7 @@ public class PersonActivity extends AppCompatActivity {
             return getString(R.string.mother);
         } else if (p1.getFatherID() != null && p1.getFatherID().equals(p2.getPersonID())) {
             return getString(R.string.father);
-        } else if (p1.getSpouseID() != null & p1.getSpouseID().equals(p2.getPersonID())) {
+        } else if (p1.getSpouseID() != null && p1.getSpouseID().equals(p2.getPersonID())) {
             return getString(R.string.spouse);
         } else if (p2.getFatherID() != null && p2.getFatherID().equals(p1.getPersonID()) ||
                 p2.getMotherID() != null && p2.getMotherID().equals(p1.getPersonID())) {
